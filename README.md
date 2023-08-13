@@ -6,6 +6,13 @@ The Counter ChaCha Stream Hash (CCSH) is a hashing mechanism inspired by the [Ch
 
 ---
 
+### Notes
+
+- This library is a simple implementation and may not be suitable for cryptographic purposes.
+- The `CCSH` class maintains its internal state. If you want to hash another set of data, you need to reinitialize the hash object.
+
+---
+
 ### Installation
 
 Clone this repository:
@@ -94,13 +101,6 @@ int main() {
     return 0;
 }
 ```
-
----
-
-### Notes
-
-- This library is a simple implementation and may not be suitable for cryptographic purposes.
-- The `CCSH` class maintains its internal state. If you want to hash another set of data, you need to reinitialize the hash object.
 
 ---
 
