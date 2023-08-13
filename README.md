@@ -2,7 +2,7 @@
 
 ### Counter ChaCha Stream Hash (CCSH)
 
-The Counter ChaCha Stream Hash (CCSH) is a hashing mechanism inspired by the ChaCha stream cipher. This library provides a simple API to compute hash values based on the ChaCha algorithm.
+The Counter ChaCha Stream Hash (CCSH) is a hashing mechanism inspired by the [ChaCha stream cipher](https://en.wikipedia.org/wiki/Salsa20#ChaCha_variant). This library provides a simple API to compute hash values based on the ChaCha algorithm.
 
 ---
 
