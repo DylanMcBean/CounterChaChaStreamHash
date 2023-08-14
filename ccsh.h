@@ -15,9 +15,9 @@ class CCSH {  // Counter ChaCha Stream Hash
 
   // Public API
   void start(const std::string& data);
-  void start(const uint8_t* data, size_t length);
+  void start(const uint8_t* data, uint64_t length);
   void update(const std::string& data);
-  void update(const uint8_t* data, size_t length);
+  void update(const uint8_t* data, uint64_t length);
   std::string hexdump() const;
 
  private:
@@ -53,7 +53,7 @@ void CCSH::start(const std::string& data) {
  * @param data Pointer to the start of the byte array.
  * @param length Length of the byte array.
  */
-void CCSH::start(const uint8_t* data, size_t length) {
+void CCSH::start(const uint8_t* data, uint64_t length) {
   state.fill(0);
   counter = 0;
   nonce = 0;
@@ -76,7 +76,7 @@ void CCSH::update(const std::string& data) {
  * @param data Pointer to the start of the byte array.
  * @param length Length of the byte array.
  */
-void CCSH::update(const uint8_t* data, size_t length) {
+void CCSH::update(const uint8_t* data, uint64_t length) {
   std::array<uint32_t, 16> currState = {
     0x65787061,  // expa
     0x6E642033,  // nd 3
@@ -88,15 +88,13 @@ void CCSH::update(const uint8_t* data, size_t length) {
   std::array<uint32_t, 16> outputBlock{0};
 
   const uint8_t* dataEnd = data + length;
-  for (; data < dataEnd; data += 8) {
+  for (; data < dataEnd; data += 32) {
     // Reset the required parts of currState
     std::memset(currStatePtr + 4, 0, 8 * sizeof(uint32_t));
 
-    size_t bytesToCopy = std::min(static_cast<size_t>(dataEnd - data), static_cast<size_t>(8));
-    for (size_t j = 0; j < bytesToCopy; j++, data++) {
-      counter += *data;
-      currState[4 + j] = *data;
-    }
+    uint8_t bytesToCopy = std::min<uint8_t>(dataEnd - data, 32);
+    std::memcpy(currStatePtr + 4, data, bytesToCopy);
+    counter += bytesToCopy;
 
     currState[12] = static_cast<uint32_t>(counter);
     currState[14] = static_cast<uint32_t>(nonce++);
@@ -107,7 +105,7 @@ void CCSH::update(const uint8_t* data, size_t length) {
       state = outputBlock;
       initialized = true;
     } else {
-      for (size_t j = 0; j < 16; j++) {
+      for (uint8_t j = 0; j < 16; j++) {
         state[j] ^= outputBlock[j];
       }
     }
